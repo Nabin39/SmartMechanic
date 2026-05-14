@@ -144,12 +144,6 @@ See `docs/AGILE_SPRINTS.md` for three sprint plans and `evidence/*` for screensh
 | `docs/PITCH_PRESENTATION.md` | 5-minute pitch + speaker notes |
 | `docs/FINAL_SUBMISSION_CHECKLIST.md` | Submission package checklist |
 
-## Contributors
-
-Replace with your team names, student IDs, and GitHub handles before submission:
-
-- Student A — `https://github.com/your-org/smart-mechanic`  
-- Student B — branch owner for notifications / background sync  
 
 ## License
 
