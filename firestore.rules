@@ -1,0 +1,21 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    /**
+     * Academic template — tighten before production:
+     * - users: read/write own document only
+     * - mechanics: public read, admin write
+     * - bookings: read/write rules scoped to customer userId or mechanic mechanicId
+     */
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    match /mechanics/{id} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    match /bookings/{id} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}

@@ -1,0 +1,4 @@
+appId: com.smartmechanic.bookingapp
+---
+- launchApp
+- assertVisible: "Smart Mechanic"

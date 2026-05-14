@@ -1,0 +1,49 @@
+# Dependencies
+node_modules/
+
+# Expo
+.expo/
+dist/
+web-build/
+
+# Native
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.hprof
+android/
+ios/
+
+# Metro
+.metro-health-check*
+
+# Environment — never commit real credentials
+.env
+.env.local
+.env.*.local
+google-services.json
+GoogleService-Info.plist
+
+# Debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Testing / coverage (keep evidence templates; ignore local dumps if preferred)
+coverage/
+*.log
+
+# EAS
+eas-build-*.json

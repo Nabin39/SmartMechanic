@@ -1,0 +1,55 @@
+{
+  "expo": {
+    "name": "Smart Mechanic",
+    "slug": "smart-mechanic",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#0B3D5C"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.academic.smartmechanic",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Smart Mechanic uses your location to find nearby garages and show them on the map.",
+        "NSCameraUsageDescription": "Smart Mechanic uses the camera to photograph vehicle issues for your booking.",
+        "NSPhotoLibraryUsageDescription": "Smart Mechanic lets you attach existing photos of vehicle issues to a booking."
+      }
+    },
+    "android": {
+      "package": "com.smartmechanic.bookingapp",
+      "googleServicesFile": "./google-services.json",
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "CAMERA",
+        "READ_MEDIA_IMAGES",
+        "POST_NOTIFICATIONS"
+      ]
+    },
+    "plugins": [
+      "expo-sqlite",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow Smart Mechanic to use your location to find nearby mechanics."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#0B3D5C"
+        }
+      ],
+      "react-native-google-mobile-ads"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "00000000-0000-0000-0000-000000000000"
+      }
+    }
+  }
+}
