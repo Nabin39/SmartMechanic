@@ -6,6 +6,7 @@ import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import RootNavigator from './src/navigation/RootNavigator';
 import { AuthProvider } from './src/context/AuthContext';
+import { BookingToastProvider } from './src/context/BookingToastContext';
 import { navigationRef } from './src/navigation/navigationRef';
 import { initFirebase, isFirebaseConfigured } from './src/firebase/config';
 import { registerBackgroundSync } from './src/services/backgroundSyncService';
@@ -37,10 +38,12 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <AuthProvider>
-        <NavigationContainer ref={navigationRef} theme={theme}>
-          <StatusBar style="dark" />
-          <RootNavigator />
-        </NavigationContainer>
+        <BookingToastProvider>
+          <NavigationContainer ref={navigationRef} theme={theme}>
+            <StatusBar style="dark" />
+            <RootNavigator />
+          </NavigationContainer>
+        </BookingToastProvider>
       </AuthProvider>
     </SafeAreaProvider>
   );

@@ -15,7 +15,7 @@ export type RootStackParamList = {
 };
 
 export type MainTabParamList = {
-  Home: undefined;
+  Home: { bookingSuccess?: boolean; message?: string } | undefined;
   Find: undefined;
   Bookings: undefined;
   Notifications: undefined;

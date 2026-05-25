@@ -16,6 +16,7 @@ function newBookingId(): string {
 
 export interface CreateBookingPayload {
   userId: string;
+  userEmail: string;
   userName: string;
   mechanicId: string;
   mechanicName: string;
@@ -38,6 +39,7 @@ export async function createBooking(payload: CreateBookingPayload): Promise<Book
   const booking: Booking = {
     bookingId,
     userId: payload.userId,
+    userEmail: payload.userEmail,
     mechanicId: payload.mechanicId,
     vehicleType: payload.vehicleType,
     vehicleModel: payload.vehicleModel,
@@ -50,19 +52,18 @@ export async function createBooking(payload: CreateBookingPayload): Promise<Book
     mechanicName: payload.mechanicName,
   };
 
-  await Promise.all([
-    createBookingDoc(booking),
-    upsertCachedBooking({
-      bookingId,
-      mechanicName: payload.mechanicName,
-      serviceType: payload.serviceType,
-      status: 'pending',
-      bookingDate: payload.bookingDate,
-      synced: 1,
-    }),
-  ]);
+  const localCacheTask = upsertCachedBooking({
+    bookingId,
+    mechanicName: payload.mechanicName,
+    serviceType: payload.serviceType,
+    status: 'pending',
+    bookingDate: payload.bookingDate,
+    synced: 1,
+  })
+    .then(() => markBookingSynced(bookingId, 1))
+    .catch(() => undefined);
 
-  await markBookingSynced(bookingId, 1);
+  await Promise.all([createBookingDoc(booking), localCacheTask]);
   await notifyBookingConfirmed(bookingId, payload.mechanicName);
 
   /**
@@ -107,9 +108,17 @@ export async function loadBookingsHybrid(userId: string): Promise<{
   localRows: Awaited<ReturnType<typeof import('../database/sqliteService').getAllCachedBookings>>;
 }> {
   const { getAllCachedBookings } = await import('../database/sqliteService');
-  const [remote, localRows] = await Promise.all([
+  const [remoteResult, localRowsResult] = await Promise.allSettled([
     fetchBookingsForUser(userId),
     getAllCachedBookings(),
   ]);
+
+  const remote = remoteResult.status === 'fulfilled' ? remoteResult.value : [];
+  const localRows = localRowsResult.status === 'fulfilled' ? localRowsResult.value : [];
+
+  if (remoteResult.status === 'rejected' && localRowsResult.status === 'rejected') {
+    throw remoteResult.reason ?? localRowsResult.reason;
+  }
+
   return { remote, localRows };
 }

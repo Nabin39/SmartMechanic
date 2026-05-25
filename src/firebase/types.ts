@@ -37,6 +37,7 @@ export interface Mechanic {
 export interface Booking {
   bookingId: string;
   userId: string;
+  userEmail?: string;
   mechanicId: string;
   vehicleType: string;
   vehicleModel: string;

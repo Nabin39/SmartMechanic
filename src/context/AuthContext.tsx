@@ -52,7 +52,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setFirebaseUser(u);
       if (u) {
         // Seed demo data after login (uses fixed IDs — safe to call repeatedly)
-        await seedAllDemoData(u.uid, u.email ?? '', u.displayName);
+        // Run in background to avoid blocking the UI or increasing startup memory.
+        seedAllDemoData(u.uid, u.email ?? '', u.displayName).catch((err) =>
+          console.warn('[seedDataService] Background seed failed:', err)
+        );
         await loadProfile(u.uid);
       } else {
         setProfile(null);

@@ -71,6 +71,7 @@ function bookingFromDoc(id: string, data: Record<string, unknown>): Booking {
   return {
     bookingId: id,
     userId: String(data.userId ?? ''),
+    userEmail: data.userEmail ? String(data.userEmail) : undefined,
     mechanicId: String(data.mechanicId ?? ''),
     vehicleType: String(data.vehicleType ?? ''),
     vehicleModel: String(data.vehicleModel ?? ''),
@@ -104,6 +105,7 @@ export async function createBookingDoc(booking: Booking): Promise<void> {
   const ref = doc(db, BOOKINGS, booking.bookingId);
   await setDoc(ref, {
     ...booking,
+    userEmail: booking.userEmail ?? '',
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   });
@@ -132,9 +134,11 @@ export async function attachPhotoPaths(
   await updateDoc(doc(db, BOOKINGS, bookingId), updates);
 }
 
-export async function fetchBookingsForUser(userId: string): Promise<Booking[]> {
+export async function fetchBookingsForUser(userId: string, userEmail?: string): Promise<Booking[]> {
   const db = requireDb();
-  const q = query(collection(db, BOOKINGS), where('userId', '==', userId));
+  const q = userId
+    ? query(collection(db, BOOKINGS), where('userId', '==', userId))
+    : query(collection(db, BOOKINGS), where('userEmail', '==', userEmail ?? ''));
   const snap = await getDocs(q);
   return snap.docs.map((d) => bookingFromDoc(d.id, d.data() as Record<string, unknown>));
 }
