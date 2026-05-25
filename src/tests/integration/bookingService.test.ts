@@ -28,6 +28,7 @@ describe('bookingService.createBooking (integration-style)', () => {
   it('calls Firestore and SQLite persistence helpers', async () => {
     const booking = await createBooking({
       userId: 'u1',
+      userEmail: 'alex@example.com',
       userName: 'Alex',
       mechanicId: 'm1',
       mechanicName: 'Garage',

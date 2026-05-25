@@ -6,6 +6,7 @@ import { AppButton } from '../components/AppButton';
 import { AppTextField } from '../components/AppTextField';
 import { validateBookingForm } from '../utils/validation';
 import { createBooking } from '../services/bookingService';
+import { useBookingToast } from '../context/BookingToastContext';
 import { useAuth } from '../context/AuthContext';
 import { colors } from '../utils/theme';
 import { navigationRef } from '../navigation/navigationRef';
@@ -15,6 +16,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'CreateBooking'>;
 export default function CreateBookingScreen({ route }: Props) {
   const { mechanicId, mechanicName } = route.params;
   const { firebaseUser, profile } = useAuth();
+  const { showToast } = useBookingToast();
   const [userName, setUserName] = useState(profile?.name ?? '');
   const [vehicleType, setVehicleType] = useState('');
   const [vehicleModel, setVehicleModel] = useState('');
@@ -38,14 +40,15 @@ export default function CreateBookingScreen({ route }: Props) {
       setError(Object.values(v.errors).filter(Boolean).join('\n'));
       return;
     }
-    if (!firebaseUser) {
-      setError('You must be logged in.');
+    if (!firebaseUser || !firebaseUser.email) {
+      setError('You must be logged in with a validated email address.');
       return;
     }
     setLoading(true);
     try {
-      const booking = await createBooking({
+      await createBooking({
         userId: firebaseUser.uid,
+        userEmail: firebaseUser.email,
         userName: userName.trim(),
         mechanicId,
         mechanicName: mechanicName ?? 'Garage',
@@ -55,7 +58,8 @@ export default function CreateBookingScreen({ route }: Props) {
         serviceType: serviceType.trim(),
         bookingDate: bookingDate.trim(),
       });
-      navigationRef.navigate('BookingDetails', { bookingId: booking.bookingId });
+      showToast('Booking confirmed! See it in My Bookings.');
+      navigationRef.navigate('MainTabs', { screen: 'Home' });
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Could not create booking');
     } finally {
